@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers as tfe
 from transformers import AutoModel, AutoConfig
-from utils import CFG
+from code_base.utils import CFG
 
 class TextEncoder(nn.Module):
     def __init__(self,
