@@ -1,7 +1,7 @@
 import re
 import json
 from torch.utils.data import Dataset
-from utils.utils import clean_text
+from code_base.utils.utils import clean_text
 
 class Preprocess(Dataset):
     def __init__(self,
