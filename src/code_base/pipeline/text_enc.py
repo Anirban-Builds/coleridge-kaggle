@@ -14,7 +14,7 @@ class TextEncoder(nn.Module):
                  device=CFG.device,
                  eval_model=False,
                  ):
-        super.__init__()
+        super().__init__()
         self.backbone_name = backbone
         if eval_model:
             self.config = AutoConfig.from_pretrained(self.backbone_name)
@@ -23,23 +23,18 @@ class TextEncoder(nn.Module):
             self.backbone = AutoModel.from_pretrained(self.backbone_name)
         self.out_feat = num_classes
         self.embed_size = embed_size
-        self.dropout = dropout
+        self.dropout = nn.Dropout(dropout)
         self.max_length = max_length
         self.device = device
-        self.fc = nn.Linear(self.backbone.config.hidden_size, self.embed_size)
-        self.pool = nn.AvgPool1d(kernel_size=self.max_length)
-        self.bn = nn.BatchNorm1d(self.embed_size)
+        self.fc1 = nn.Linear(self.backbone.config.hidden_size, self.embed_size)
+        self.fc2 = nn.Linear(self.embed_size, self.out_feat)
 
-    def forward(self, input_ids, att_mask, labels=None):
+    def forward(self, input_ids, att_mask):
         features = self.backbone(input_ids,
                                  attention_mask= att_mask).last_hidden_state
-        features = self.fc(features)
-        features = features.transpose(1, 2)
-        features = self.pool(features)
-        features = features.view(features.size(0), -1)
-        features = self.bn(features)
-        if labels is not None:
-            return self.final(features, labels)
+        features = self.dropout(features)
+        features = self.fc1(features)
+        features = self.fc2(features)
         return features
 
 
