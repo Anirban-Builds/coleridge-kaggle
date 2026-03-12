@@ -66,9 +66,7 @@ class Preprocess(Dataset):
                 ner_lst.append(tags)
             elif any(word in sentence for word in ['data', 'study']):
                 ner_lst.append(tags)
-        if not ner_lst:
-            return []
-        return np.array(ner_lst, dtype=object).flatten().tolist()
+        return [tup for sentence in ner_lst for tup in sentence]
 
 
 
