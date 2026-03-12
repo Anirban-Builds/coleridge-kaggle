@@ -1,5 +1,6 @@
 import re
 import json
+import numpy as np
 from torch.utils.data import Dataset
 from code_base.utils.utils import clean_text
 
@@ -65,7 +66,9 @@ class Preprocess(Dataset):
                 ner_lst.append(tags)
             elif any(word in sentence for word in ['data', 'study']):
                 ner_lst.append(tags)
-        return ner_lst
+        if not ner_lst:
+            return []
+        return np.array(ner_lst, dtype=object).flatten().tolist()
 
 
 
