@@ -47,6 +47,6 @@ class NERDataset(Dataset):
             else:
                 labels.append(0)
 
-        if self.only_feat:
+        if self.only_feat: # if in inference mode
             return input_ids, att_mask
         return input_ids, att_mask, torch.tensor(labels).float()
