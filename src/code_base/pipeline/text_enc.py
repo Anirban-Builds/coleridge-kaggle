@@ -35,6 +35,7 @@ class TextEncoder(nn.Module):
         features = self.dropout(features)
         features = self.fc1(features)
         features = self.fc2(features)
+        features = features.view(-1, self.out_feat)
         return features
 
 
