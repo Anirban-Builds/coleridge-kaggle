@@ -8,9 +8,11 @@ class Preprocess(Dataset):
     def __init__(self,
                  df,
                  dir,
+                 inference=False,
                  ):
         self.df = df
         self.dir = dir
+        self.inference = inference
 
     def _sublist(self, list_, sublist_):
         '''
@@ -51,8 +53,9 @@ class Preprocess(Dataset):
     def __getitem__(self, index):
         ner_lst=[]
         row = self.df.loc[index]
-        labels = row.dataset_label.split('|')
-        labels = [clean_text(label) for label in labels]
+        if not self.inference:
+            labels = row.dataset_label.split('|')
+            labels = [clean_text(label) for label in labels]
 
         with open(f'{self.dir}{row.Id}.json', 'r') as f:
              text_list = json.load(f)
