@@ -52,6 +52,7 @@ class Preprocess(Dataset):
 
     def __getitem__(self, index):
         ner_lst=[]
+        labels=[]
         row = self.df.loc[index]
         if not self.inference:
             labels = row.dataset_label.split('|')
