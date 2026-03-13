@@ -52,7 +52,7 @@ class Preprocess(Dataset):
 
     def __getitem__(self, index):
         ner_lst=[]
-        labels=[]
+        labels = None
         row = self.df.loc[index]
         if not self.inference:
             labels = row.dataset_label.split('|')
@@ -66,10 +66,13 @@ class Preprocess(Dataset):
                     ]
         for sentence in sentences:
             ispositive, tags = self._ner(sentence, labels)
-            if ispositive:
+            if self.inference:
                 ner_lst.append(tags)
-            elif any(word in sentence for word in ['data', 'study']):
-                ner_lst.append(tags)
+            else:
+                if ispositive:
+                    ner_lst.append(tags)
+                elif any(word in sentence for word in ['data', 'study']):
+                    ner_lst.append(tags)
         return [tup for sentence in ner_lst for tup in sentence]
 
 
