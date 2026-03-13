@@ -73,6 +73,7 @@ class Preprocess(Dataset):
                     ner_lst.append(tags)
                 elif any(word in sentence for word in ['data', 'study']):
                     ner_lst.append(tags)
+        print(f"paper {row.Id}: {len(sentences)} total sentences, {len(ner_lst)} kept")
         return [tup for sentence in ner_lst for tup in sentence]
 
 
