@@ -21,8 +21,7 @@ class NERDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        sample = self.data[index] # one sample in ner_list
-        print(f"sample length: {len(sample)}")
+        sample = self.data[index] # one ner_list
         words=[]
         tags=[]
         for word, tag in sample:

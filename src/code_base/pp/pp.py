@@ -1,10 +1,10 @@
 import re
 import json
 import numpy as np
-from torch.utils.data import Dataset
+# from torch.utils.data import Dataset
 from code_base.utils.utils import clean_text
 
-class Preprocess(Dataset):
+class Preprocess:
     def __init__(self,
                  df,
                  dir,
@@ -47,8 +47,8 @@ class Preprocess(Dataset):
             n = ['O'] *len(words)
             return False, list(zip(words, n))
 
-    def __len__(self):
-        return len(self.df)
+    # def __len__(self):
+    #     return len(self.df)
 
     def __getitem__(self, index):
         ner_lst=[]
@@ -73,8 +73,7 @@ class Preprocess(Dataset):
                     ner_lst.append(tags)
                 elif any(word in sentence for word in ['data', 'study']):
                     ner_lst.append(tags)
-        print(f"paper {row.Id}: {len(sentences)} total sentences, {len(ner_lst)} kept")
-        return [tup for sentence in ner_lst for tup in sentence]
+        return ner_lst
 
 
 
