@@ -10,7 +10,7 @@ class NERDataset(Dataset):
                  truncation = True,
                  max_length=35,
                  gen_feat_only = False):
-        self.data = data # ner_list
+        self.data = data # dataframe
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.only_feat = gen_feat_only
         self.padding = padding
@@ -21,17 +21,11 @@ class NERDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, index):
-        sample = self.data[index] # one ner_list
-        words=[]
-        tags=[]
-        for word, tag in sample:
-            words.append(word)
-            tags.append(tag)
-        # words = " ".join(words)
+        row = self.data.loc[index] # one row = one sentence
+
         text = self.tokenizer(
-                words,
+                row.text,
                 padding = self.padding,
-                is_split_into_words = True,
                 truncation = self.truncation,
                 max_length = self.max_length,
                 return_tensors = "pt"
@@ -43,7 +37,7 @@ class NERDataset(Dataset):
         labels = []
         for word_idx in text.word_ids(batch_index=0):
             if word_idx is not None:
-                labels.append(label2id[tags[word_idx]])
+                labels.append(label2id[row.tags[word_idx]])
             else:
                 labels.append(0)
 
