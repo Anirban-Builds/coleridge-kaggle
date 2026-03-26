@@ -32,15 +32,17 @@ class NERDataset(Dataset):
             )
         input_ids = text["input_ids"][0]
         att_mask = text["attention_mask"][0]
+        word_ids = text.word_ids(batch_index=0)
         if not self.only_feat:
             label2id = {'O': 0, 'B': 1, 'I': 2}
             labels = []
-            for word_idx in text.word_ids(batch_index=0):
+            for word_idx in word_ids:
                 if word_idx is not None:
                     labels.append(label2id[row.tags[word_idx]])
                 else:
                     labels.append(0)
 
         if self.only_feat: # if in inference/eval mode
-            return input_ids, att_mask
+            word_ids = [w if w is not None else -1 for w in word_ids]
+            return input_ids, att_mask, torch.tensor(word_ids)
         return input_ids, att_mask, torch.tensor(labels).float()
