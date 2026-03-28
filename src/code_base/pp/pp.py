@@ -67,7 +67,8 @@ class Preprocess:
         for sentence in sentences:
             ispositive, tags = self._ner(sentence, labels)
             if self.inference:
-                ner_lst.append(tags)
+                if any(word in sentence for word in ['data', 'study', 'survey', 'dataset']):
+                    ner_lst.append(tags)
             else:
                 if ispositive:
                     ner_lst.append(tags)
