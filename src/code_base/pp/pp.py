@@ -47,8 +47,14 @@ class Preprocess:
             n = ['O'] *len(words)
             return False, list(zip(words, n))
 
-    # def __len__(self):
-    #     return len(self.df)
+    def _has_kwords(self, text):
+        if re.search(r'(?:[A-Z][a-z]{2,20} ){2,6}', text):
+            return True
+        if re.search(r'[A-Z]{3,10}', text):
+            return True
+        if re.search(r'(?: [Dd]ata| [Rr]egistry|[Gg]enome [Ss]equence| [Mm]odel| [Ss]tudy| [Ss]urvey)', text):
+            return True
+        return False
 
     def __getitem__(self, index):
         ner_lst=[]
@@ -71,7 +77,7 @@ class Preprocess:
             else:
                 if ispositive:
                     ner_lst.append(tags)
-                elif any(word in sentence for word in ['data', 'study']):
+                elif self._has_kwords(sentence):
                     ner_lst.append(tags)
         return ner_lst
 
