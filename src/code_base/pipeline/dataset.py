@@ -37,7 +37,7 @@ class NERDataset(Dataset):
             label2id = {'O': 0, 'B': 1, 'I': 2}
             labels = []
             for word_idx in word_ids:
-                if word_idx is not None:
+                if word_idx is not None and word_idx < len(row.tags):
                     labels.append(label2id[row.tags[word_idx]])
                 else:
                     labels.append(0)
