@@ -1,7 +1,6 @@
 import re
 import json
 import numpy as np
-# from torch.utils.data import Dataset
 from code_base.utils.utils import clean_text
 
 class Preprocess:
@@ -13,6 +12,65 @@ class Preprocess:
         self.df = df
         self.dir = dir
         self.inference = inference
+
+    def _choose_chunk(self, sent, chunks):
+        if 200<= len(sent) < 400:
+            chunks.append(sent)
+            return chunks, ""
+        elif(len(sent)) >= 400:
+            chunks.extend(self._split_long(sent))
+            return chunks, ""
+        else:
+            return chunks, sent
+
+    def _chunk_sentences(self, sentences):
+        '''
+        sentences must stay in chunk of 200 - 400 chars
+        '''
+        chunks=[]
+        buf=""
+        for sent in sentences:
+            if not sent.strip():
+                continue # empty sentence
+            if not buf: # if buffer is empty
+                chunks, buf = self._choose_chunk(sent, chunks)
+            else: # if buffer is not empty
+                combined = buf + ". " + sent
+                if len(combined) >=400:
+                    chunks.append(buf)
+                    buf = ""
+                    chunks, buf = self._choose_chunk(sent, chunks)
+                else:
+                    buf = combined
+
+        if buf:
+            chunks.append(buf) # if buf is not empty at last
+        return chunks
+
+    def _split_long(self, sentence):
+        '''
+        split long sentence into multiple overlapping candidates
+        '''
+        results = []
+        results.extend(re.findall(
+            r'(?:^| ).{0,150}[A-Z][a-z]{2,20} (?:(?:[A-Z][a-z]{2,20}|of|up|to|and|the|in|on|s|for)[- .,]){0,10}(?:[A-Z][a-z]{2,20})(?: data| survey| sample| study| [0-9]{2,4})*.{0,150}(?:[. ]|$)',
+            sentence))
+        results.extend(re.findall(
+            r'(?:^| ).{0,200}(?: [Dd]ata| [Rr]egistry|[Gg]enome [Ss]equence| [Mm]odel| [Ss]tudy| [Ss]urvey).{0,200}(?:[. ]|$)',
+            sentence))
+        results.extend(re.findall(
+            r'(?:^| ).{0,200}[A-Z]{4,10}.{0,200}(?:[. ]|$)',
+            sentence))
+        return results
+
+    def _is_candidate(self, sentence):
+        '''
+        regex pattern to identify candidate sentence
+        '''
+        a = re.findall(r'(?:(?:[A-Z][a-z]{2,20}|of|in|s|for|and) ){3,6}', sentence)
+        a.extend(re.findall(r'(?: [Dd]ata| [Rr]egistry|[Gg]enome [Ss]equence| [Mm]odel| [Ss]tudy| [Ss]urvey)', sentence))
+        a.extend(re.findall(r'[A-Z]{4,10}', sentence))
+        return len(a) > 0
 
     def _sublist(self, list_, sublist_):
         '''
@@ -48,7 +106,8 @@ class Preprocess:
             return False, list(zip(words, n))
 
     def __getitem__(self, index):
-        ner_lst=[]
+        pos_lst=[]
+        neg_lst=[]
         labels = None
         row = self.df.loc[index]
         if not self.inference:
@@ -57,20 +116,26 @@ class Preprocess:
 
         with open(f'{self.dir}{row.Id}.json', 'r') as f:
              text_list = json.load(f)
+
         sentences = [clean_text(sentence)
                      for section in text_list
                      for sentence in section['text'].split('.') # list of sentences
                     ]
-        for sentence in sentences:
+
+        chunks = self._chunk_sentences(sentences)
+        cand_sents = [s for s in chunks if self._is_candidate(s)]
+
+
+        for sentence in cand_sents:
             ispositive, tags = self._ner(sentence, labels)
             if self.inference:
-                ner_lst.append(tags)
+                pos_lst.append(tags)
             else:
                 if ispositive:
-                    ner_lst.append(tags)
-                elif any(word in sentence for word in ['data', 'study']):
-                    ner_lst.append(tags)
-        return ner_lst
+                    pos_lst.append(tags)
+                else:
+                    neg_lst.append(tags)
+        return pos_lst if self.inference else (pos_lst, neg_lst)
 
 
 
