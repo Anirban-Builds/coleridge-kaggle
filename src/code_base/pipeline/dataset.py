@@ -23,7 +23,7 @@ class NERDataset(Dataset):
     def __getitem__(self, index):
         row = self.data.loc[index] # one row = one sentence
 
-        words = row.text.split()
+        words = row.text.split() # list of words
 
         text = self.tokenizer(
                 words,
@@ -32,7 +32,7 @@ class NERDataset(Dataset):
                 max_length = self.max_length,
                 return_tensors = "pt",
                 is_split_into_words=True
-            )
+            ) # tokens
         input_ids = text["input_ids"][0]
         att_mask = text["attention_mask"][0]
         word_ids = text.word_ids(batch_index=0)
