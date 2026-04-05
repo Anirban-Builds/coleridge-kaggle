@@ -23,12 +23,15 @@ class NERDataset(Dataset):
     def __getitem__(self, index):
         row = self.data.loc[index] # one row = one sentence
 
+        words = row.text.split()
+
         text = self.tokenizer(
-                row.text,
+                words,
                 padding = self.padding,
                 truncation = self.truncation,
                 max_length = self.max_length,
-                return_tensors = "pt"
+                return_tensors = "pt",
+                is_split_into_words=True
             )
         input_ids = text["input_ids"][0]
         att_mask = text["attention_mask"][0]
@@ -37,7 +40,7 @@ class NERDataset(Dataset):
             label2id = {'O': 0, 'B': 1, 'I': 2}
             labels = []
             for word_idx in word_ids:
-                if word_idx is not None and word_idx < len(row.tags):
+                if word_idx is not None:
                     labels.append(label2id[row.tags[word_idx]])
                 else:
                     labels.append(0)
