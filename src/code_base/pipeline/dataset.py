@@ -43,7 +43,7 @@ class NERDataset(Dataset):
                 if word_idx is not None:
                     labels.append(label2id[row.tags[word_idx]])
                 else:
-                    labels.append(0)
+                    labels.append(-100)
 
         if self.only_feat: # if in inference/eval mode
             word_ids = [w if w is not None else -1 for w in word_ids]
