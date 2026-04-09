@@ -21,6 +21,7 @@ class TokenClassEncoder(nn.Module):
             self.backbone = AutoModelForTokenClassification.from_config(self.config)
         else:
             self.backbone = AutoModelForTokenClassification.from_pretrained(self.backbone_name,
+                                                            num_labels = num_classes,
                                                             ignore_mismatched_sizes=True)
         self.out_feat = num_classes
         self.embed_size = embed_size
