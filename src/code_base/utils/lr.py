@@ -8,12 +8,11 @@ class WarmupScheduler(LRScheduler):
         plateau_lr_bb,
         plateau_lr_neck,
         last_epoch=-1,
-        verbose=False,
     ):
         self.warmup_epochs = warmup_epochs
         self.plateau_lr_backbone = plateau_lr_bb
         self.plateau_lr_neck = plateau_lr_neck
-        super().__init__(optimizer, last_epoch, verbose)
+        super().__init__(optimizer, last_epoch)
 
     def get_lr(self):
         # backbone warmup schedule
