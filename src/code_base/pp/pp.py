@@ -129,7 +129,6 @@ class Preprocess:
         for sentence in cand_sents:
             ispositive, tags = self._ner(sentence, labels)
             if self.inference:
-                if ispositive:
                     pos_lst.append(tags)
             else:
                 if ispositive:
