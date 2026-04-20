@@ -14,4 +14,5 @@ setup(
     author="Anirban",
     python_requires=">=3.12",
     packages=find_packages(),
+    package_dir={"": "src"},
 )
