@@ -17,7 +17,8 @@ def gen_data(data,
                           tokenizer = tkn_pth,
                           data_is_list=True
                           )
-    dataloader_txt = DataLoader(data_txt, batch_size=batch_size,
+    dataloader_txt = DataLoader(data_txt,
+                                batch_size=batch_size,
                                 shuffle=shuffle,
                                 num_workers=num_workers,
                                 )
