@@ -14,7 +14,7 @@ class NERDataset(Dataset):
                  gen_feat_only = False):
         self.data = data # dataframe
         self.list = data_is_list
-        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
+        self.tokenizer = AutoTokenizer.from_pretrained(tokenizer, token=CFG.hf_token)
         self.only_feat = gen_feat_only
         self.padding = padding
         self.truncation = truncation

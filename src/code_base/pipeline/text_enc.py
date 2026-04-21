@@ -17,7 +17,7 @@ class TextEncoder(nn.Module):
         super().__init__()
         self.backbone_name = backbone
         if eval_model:
-            self.config = AutoConfig.from_pretrained(self.backbone_name)
+            self.config = AutoConfig.from_pretrained(self.backbone_name, token=CFG.hf_token)
             self.backbone = AutoModel.from_config(self.config)
         else:
             self.backbone = AutoModel.from_pretrained(self.backbone_name)
