@@ -11,7 +11,7 @@ def post_process(preds, word_ids, text):
 
         labels = set(v for _, v in A.iter(text[i].lower()))
         if labels :
-            preds_set.union(labels)
+            preds_set = preds_set.union(labels)
 
         print(preds_set)
         words = text[i].split()
@@ -51,13 +51,13 @@ def post_process(preds, word_ids, text):
             li = list(set([clean_text(s, Lower=True) for s in spans]))
             if preds_set:
                 li = clean_spans(li, list(preds_set), th=0.7)
-            preds_set.union(set(li))
+            preds_set = preds_set.union(set(li))
 
         regex_text = list(regex_extract(text[i]))
         if regex_text:
             li = list(set([clean_text(s) for s in regex_text]))
             if preds_set:
                 li = clean_spans(li, list(preds_set), th=0.6)
-            preds_set.union(set(li))
+            preds_set = preds_set.union(set(li))
 
     return list(preds_set)
