@@ -1,8 +1,8 @@
 ---
 title: Coleridge Kaggle
-emoji: 📊
-colorFrom: blue
-colorTo: purple
-sdk: docker
-pinned: false
+sdk : docker
 ---
+
+```
+Kaggle Notebook (Inference) : https://www.kaggle.com/code/aniarya/coleridge-nb-inference
+```
