@@ -13,6 +13,7 @@ def post_process(preds, word_ids, text):
         if labels :
             preds_set.union(labels)
 
+        print(preds_set)
         words = text[i].split()
         wid = word_ids[i].tolist()
 

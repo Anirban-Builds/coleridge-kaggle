@@ -6,7 +6,6 @@ def preprocess(text, inference=True, tiny=True):
     x = pp.__getitem__() # return pos_list
     if not x:
         return []
-    print("number of sentences :", len(x))
     print("\n")
     for sent in x:
         if sent:
