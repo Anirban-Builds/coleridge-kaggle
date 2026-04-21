@@ -1,17 +1,21 @@
 import re
 import json
 import numpy as np
-from code_base.utils.utils import clean_text
+from src.code_base.utils import clean_text
 
 class Preprocess:
     def __init__(self,
-                 df,
-                 dir,
+                 df = None,
+                 dir = "",
                  inference=False,
+                 tiny = False,
+                 text = ""
                  ):
         self.df = df
         self.dir = dir
         self.inference = inference
+        self.tiny = tiny
+        self.text = text
 
     def _choose_chunk(self, sent, chunks):
         if 200<= len(sent) < 400:
@@ -87,10 +91,10 @@ class Preprocess:
         per sentence BIO tagging to generate positve and negative samples
         '''
         words = sentence.split()
+        n = ['O'] * len(words)
 
         if labels is not None and any(re.findall(f'\\b{label}\\b', sentence)
                                       for label in labels):
-            n = ['O'] * len(words)
             for label in labels:
                 label_words = label.split()
                 pos = self._sublist(words, label_words)
@@ -102,29 +106,35 @@ class Preprocess:
 
             return True, list(zip(words, n))
         else:
-            n = ['O'] *len(words)
             return False, list(zip(words, n))
 
-    def __getitem__(self, index):
+    def __getitem__(self, index=None):
         pos_lst=[]
         neg_lst=[]
         labels = None
-        row = self.df.loc[index]
+        if not self.tiny:
+            row = self.df.loc[index]
+
         if not self.inference:
             labels = row.dataset_label.split('|')
             labels = [clean_text(label) for label in labels]
 
-        with open(f'{self.dir}{row.Id}.json', 'r') as f:
-             text_list = json.load(f)
+        if not self.tiny:
+            with open(f'{self.dir}{row.Id}.json', 'r') as f:
+                text_list = json.load(f)
 
-        sentences = [clean_text(sentence)
-                     for section in text_list
-                     for sentence in section['text'].split('.') # list of sentences
-                    ]
+        if not self.tiny:
+            sentences = [clean_text(sentence)
+                        for section in text_list
+                        for sentence in section['text'].split('.') # list of sentences
+                        ]
+        if self.tiny:
+             sentences = [clean_text(sentence)
+                        for sentence in self.text.split('.') # list of sentences
+                        ]
 
         chunks = self._chunk_sentences(sentences)
         cand_sents = [s for s in chunks if self._is_candidate(s)]
-
 
         for sentence in cand_sents:
             ispositive, tags = self._ner(sentence, labels)
@@ -136,6 +146,3 @@ class Preprocess:
                 else:
                     neg_lst.append(tags)
         return pos_lst if self.inference else (pos_lst, neg_lst)
-
-
-

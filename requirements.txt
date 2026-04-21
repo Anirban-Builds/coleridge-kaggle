@@ -2,3 +2,7 @@ setuptools
 torch
 transformers
 pyahocorasick
+pandas
+datasets
+gradio
+tqdm

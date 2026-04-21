@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers as tfe
 from transformers import AutoModelForTokenClassification, AutoConfig
-from code_base.utils import CFG
+from src.code_base.utils import CFG
 
 class TokenClassEncoder(nn.Module):
     def __init__(self,

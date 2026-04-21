@@ -1,4 +1,5 @@
 import torch
+from src.code_base.utils import CFG
 from torch.utils.data import Dataset
 from transformers import AutoTokenizer
 
@@ -6,11 +7,13 @@ class NERDataset(Dataset):
     def __init__(self,
                  data,
                  tokenizer=None,
+                 data_is_list = False,
                  padding = "max_length",
                  truncation = True,
-                 max_length=35,
+                 max_length=CFG.max_length,
                  gen_feat_only = False):
         self.data = data # dataframe
+        self.list = data_is_list
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer)
         self.only_feat = gen_feat_only
         self.padding = padding
@@ -20,10 +23,14 @@ class NERDataset(Dataset):
     def __len__(self):
         return len(self.data)
 
-    def __getitem__(self, index):
-        row = self.data.loc[index] # one row = one sentence
+    def __getitem__(self, index=None):
+        if not self.list:
+            row = self.data.loc[index] # one row = one sentence
+            words = row.text.split() # list of words
 
-        words = row.text.split() # list of words
+        if self.list:
+            text = self.data[index]
+            words = text.split()
 
         text = self.tokenizer(
                 words,
@@ -36,6 +43,7 @@ class NERDataset(Dataset):
         input_ids = text["input_ids"][0]
         att_mask = text["attention_mask"][0]
         word_ids = text.word_ids(batch_index=0)
+
         if not self.only_feat:
             label2id = {'O': 0, 'B': 1, 'I': 2}
             labels = []
