@@ -133,15 +133,11 @@ class Preprocess:
                         for sentence in self.text.split('.') # list of sentences
                         ]
 
-        print("number of sentences before chunking : ", len(sentences))
-        print("\n")
+        if not sentences:
+            return []
 
         chunks = self._chunk_sentences(sentences)
-        print("number of sentences after chunking : ", len(chunks))
-        print("\n")
         cand_sents = [s for s in chunks if self._is_candidate(s)]
-        print("number of sentences after filtering : ", len(cand_sents))
-        print("\n")
 
         for sentence in cand_sents:
             ispositive, tags = self._ner(sentence, labels)

@@ -16,6 +16,9 @@ class RequestBody(BaseModel):
 async def predict(req : RequestBody):
     res = inference( req.text)
 
+    if not res:
+        res.append("No Dataset Found 👎🏻")
+
     return {"ner_list": f"{res}"}
 
 if __name__ == "__main__":

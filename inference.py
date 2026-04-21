@@ -11,12 +11,11 @@ def clean():
 def inference(text : str):
     #will get text input as data
     data = preprocess(text) # return list of sentences
+    if not data:
+        return []
     dataloader = gen_data(data)
     model = load_model(CFG.backbone[0], ckpt[0])
-    res = [return_feas(model, dataloader)]
-
-    feas = [r[0] for r in res]
-    word_ids = [r[1] for r in res]
+    feas, word_ids = return_feas(model, dataloader)
 
     pred_lst = post_process(feas, word_ids, data)
 
