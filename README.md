@@ -3,6 +3,4 @@ title: Coleridge Kaggle
 sdk : docker
 ---
 
-```
-Kaggle Notebook (Inference) : https://www.kaggle.com/code/aniarya/coleridge-nb-inference
-```
+Kaggle Notebook (Inference) : [Link](https://www.kaggle.com/code/aniarya/coleridge-nb-inference)
