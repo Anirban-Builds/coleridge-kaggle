@@ -8,6 +8,7 @@ def preprocess(text, inference=True, tiny=True):
         if sent:
             sent, _ = zip(*sent)
             text_ = " ".join(sent)
+            print(f"{text_}\n")
             text_lst.append(text_)
 
     return text_lst
