@@ -132,6 +132,8 @@ class Preprocess:
              sentences = [clean_text(sentence)
                         for sentence in self.text.split('.') # list of sentences
                         ]
+        print(f"DEBUG: Raw text received in class: {repr(self.text)}")
+        print("\n")
 
         print("number of sentences before chunking : ", len(sentences))
         print("\n")
