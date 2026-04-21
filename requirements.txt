@@ -5,4 +5,4 @@ pyahocorasick
 pandas
 datasets
 gradio
-tqdm
+python-dotenv

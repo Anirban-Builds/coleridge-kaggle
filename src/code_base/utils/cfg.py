@@ -1,5 +1,8 @@
 import torch
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class CFG:
     r"""
@@ -15,4 +18,4 @@ class CFG:
     num_workers = 8
     embed_size = 512
     backbone = ["dslim/bert-base-NER"]
-    # hf_token =
+    hf_token = os.getenv("HF_TOKEN")
