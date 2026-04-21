@@ -1,4 +1,5 @@
 import torch
+import os
 
 class CFG:
     r"""
@@ -14,3 +15,4 @@ class CFG:
     num_workers = 8
     embed_size = 512
     backbone = ["dslim/bert-base-NER"]
+    # hf_token =

@@ -1,6 +1,6 @@
 from src.code_base.pipeline import NERDataset, TextEncoder
 from torch.utils.data import DataLoader
-from src.code_base.utils import CFG, ckpt
+from src.code_base.utils import CFG
 import torch
 
 def gen_data(data,
@@ -14,11 +14,13 @@ def gen_data(data,
     data_txt = NERDataset(data,
                           max_length=max_length,
                           gen_feat_only = gen_feat_only,
-                          tokenizer = tkn_pth)
+                          tokenizer = tkn_pth,
+                          data_is_list=True
+                          )
     dataloader_txt = DataLoader(data_txt, batch_size=batch_size,
                                 shuffle=shuffle,
                                 num_workers=num_workers,
-                                pin_memory=True)
+                                )
     return dataloader_txt
 
 def load_model(backbone, ckpt_path):
