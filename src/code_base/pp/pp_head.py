@@ -4,6 +4,8 @@ def preprocess(text, inference=True, tiny=True):
     pp = Preprocess(text, inference=inference, tiny=tiny) # initialization
     text_lst = []
     x = pp.__getitem__() # return pos_list
+    print("number of sentences :", len(x))
+    print("\n")
     for sent in x:
         if sent:
             sent, _ = zip(*sent)
