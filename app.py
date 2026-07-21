@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 load_dotenv()
 
-origins = os.getenv("CORS")
+origins = [os.getenv("CORS")]
 
 app = FastAPI(title="coleridge-kaggle-app")
 
